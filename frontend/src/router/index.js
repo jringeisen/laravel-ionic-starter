@@ -7,6 +7,14 @@ const routes = [
     redirect: '/tabs/tab1'
   },
   {
+    path: '/login',
+    component: () => import('@/views/auth/LoginPage')
+  },
+  {
+    path: '/register',
+    component: () => import('@/views/auth/RegisterPage')
+  },
+  {
     path: '/tabs/',
     component: TabsPage,
     children: [
