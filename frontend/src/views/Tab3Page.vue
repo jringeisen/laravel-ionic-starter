@@ -1,3 +1,8 @@
+<script setup>
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from "@ionic/vue";
+import ExploreContainer from "@/components/ExploreContainer.vue";
+</script>
+
 <template>
     <ion-page>
         <ion-header>
@@ -16,14 +21,3 @@
         </ion-content>
     </ion-page>
 </template>
-
-<script>
-import { defineComponent } from "vue";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from "@ionic/vue";
-import ExploreContainer from "@/components/ExploreContainer.vue";
-
-export default defineComponent({
-    name: "Tab3Page",
-    components: { ExploreContainer, IonHeader, IonToolbar, IonTitle, IonContent, IonPage },
-});
-</script>
