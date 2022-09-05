@@ -1,43 +1,8 @@
 <script setup>
 import { IonPage, IonContent } from "@ionic/vue";
-import apiClient from "../../services/apiClient";
-import { Preferences } from "@capacitor/preferences";
-import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { useLoginStore } from "../../store/auth/login";
 
-const router = useRouter();
-
-const form = ref({
-    email: "",
-    password: "",
-    device_name: "device",
-});
-
-const formErrors = ref([]);
-const isLoading = ref(false);
-
-function submit() {
-    isLoading.value = true;
-
-    apiClient
-        .post("/api/auth/token", form.value)
-        .then((response) => {
-            isLoading.value = false;
-
-            Preferences.set({
-                key: "token",
-                value: response.data,
-            });
-
-            router.push("/tabs/tab1");
-        })
-        .catch((errors) => {
-            if (errors.response.status === 422) {
-                formErrors.value = errors.response.data.errors;
-                isLoading.value = false;
-            }
-        });
-}
+const store = useLoginStore();
 </script>
 
 <template>
@@ -48,20 +13,20 @@ function submit() {
 
                 <div class="mt-8">
                     <div class="bg-white py-8 px-4">
-                        <form class="space-y-6" @submit.prevent="submit">
+                        <form class="space-y-6" @submit.prevent="store.login()">
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
                                 <div class="mt-1 relative">
-                                    <input id="email" name="email" v-model="form.email" type="email" autocomplete="email" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-blue-400" />
-                                    <span v-if="formErrors.email" class="text-xs text-red-600 absolute">{{ formErrors.email[0] }}</span>
+                                    <input id="email" name="email" v-model="store.form.email" type="email" autocomplete="email" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-blue-400" />
+                                    <span v-if="store.formErrors.email" class="text-xs text-red-600 absolute">{{ store.formErrors.email[0] }}</span>
                                 </div>
                             </div>
 
                             <div>
                                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                                 <div class="mt-1 relative">
-                                    <input id="password" name="password" v-model="form.password" type="password" autocomplete="current-password" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-blue-400" />
-                                    <span v-if="formErrors.password" class="text-xs text-red-600 absolute">{{ formErrors.password[0] }}</span>
+                                    <input id="password" name="password" v-model="store.form.password" type="password" autocomplete="current-password" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-blue-400" />
+                                    <span v-if="store.formErrors.password" class="text-xs text-red-600 absolute">{{ store.formErrors.password[0] }}</span>
                                 </div>
                             </div>
 
@@ -72,8 +37,8 @@ function submit() {
                             </div>
 
                             <div>
-                                <button type="submit" :disabled="isLoading" class="flex items-center w-full justify-center rounded-md border border-transparent bg-blue-400 py-3 px-4 text-sm font-medium text-white shadow-sm disabled:opacity-75 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-                                    <span v-if="isLoading">
+                                <button type="submit" :disabled="store.isLoading" class="flex items-center w-full justify-center rounded-md border border-transparent bg-blue-400 py-3 px-4 text-sm font-medium text-white shadow-sm disabled:opacity-75 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+                                    <span v-if="store.isLoading">
                                         <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB" />
                                             <path
