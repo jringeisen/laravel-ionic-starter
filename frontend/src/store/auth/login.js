@@ -3,8 +3,6 @@ import { useRouter } from "vue-router";
 import apiClient from "../../services/apiClient";
 import { Preferences } from "@capacitor/preferences";
 
-
-
 export const useLoginStore = defineStore('login', {
     state: () => {
         return {
